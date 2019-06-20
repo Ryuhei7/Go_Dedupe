@@ -23,15 +23,17 @@ func SaveData(file *os.File, sh *de.StrideHash, strideSize uint32) {
 		// binary := hex.EncodeToString(buf[:readSize])
 		namehash := sh.Hashes[i]
 
-		filename := "buckets/4/" + namehash
-		newfile, err := os.Create(filename)
-		if err != nil {
-			// Openエラー処理
-			panic(err)
-		}
-		defer newfile.Close()
+		filename := "..bucket/1/" + namehash
+		func() {
+			newfile, err := os.Create(filename)
+			if err != nil {
+				// Openエラー処理
+				panic(err)
+			}
+			defer newfile.Close()
 
-		//fmt.Println("bufsize = ", hex.EncodeToString(buf[:readSize]))
-		newfile.Write(buf)
+			//fmt.Println("bufsize = ", hex.EncodeToString(buf[:readSize]))
+			newfile.Write(buf)
+		}()
 	}
 }
