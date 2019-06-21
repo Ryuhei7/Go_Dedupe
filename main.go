@@ -46,7 +46,7 @@ func main() {
 	if checker == 0 {
 		strideCount = uint32(fileinfo.Size()) / strideSize
 	} else {
-		strideCount = uint32(fileinfo.Size())/strideSize + 1
+		strideCount = uint32(fileinfo.Size()) / strideSize + 1
 	}
 
 	// StrideHashを初期化してからストライドのハッシュを計算する

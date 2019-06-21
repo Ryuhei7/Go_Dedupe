@@ -23,7 +23,7 @@ func SaveData(file *os.File, sh *de.StrideHash, strideSize uint32) {
 		// binary := hex.EncodeToString(buf[:readSize])
 		namehash := sh.Hashes[i]
 
-		filename := "..bucket/1/" + namehash
+		filename := "bucket/1/" + namehash
 		func() {
 			newfile, err := os.Create(filename)
 			if err != nil {
