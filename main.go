@@ -9,6 +9,7 @@ import (
 	bl "ryuhei/Go_Dedup/cmd/bloomfilter"
 	de "ryuhei/Go_Dedup/cmd/dedupe"
 	st "ryuhei/Go_Dedup/cmd/store"
+	ts "ryuhei/Go_Dedup/cmd/testtool"
 )
 
 // ScanData はデータのパスを返します
@@ -33,6 +34,7 @@ func main() {
 	var strideSize uint32 = 4096            // 1024 2048 4096
 	var blFlag bool                         // このフラグはBloomFilterの判定に使用
 	var duplicater []uint32
+	me := ts.NewMeasure()
 
 	file, openerr := os.Open(path)
 	if openerr != nil {
@@ -53,6 +55,8 @@ func main() {
 	sHashes := de.NewStrideHash(strideCount)
 	sHashes.CreateStrideHash(file, strideSize)
 
+
+	me.StartAll()
 	for i := range sHashes.Hashes {
 		blFlag = blfilter.Exists(sHashes.Hashes[i])
 		if blFlag == false {
@@ -62,6 +66,13 @@ func main() {
 			fmt.Println("dedupe true")
 		}
 	}
+	me.EndAll()
+	me.CalcAll()
+	fmt.Println("BloomFilter")
+	fmt.Println("Memory is ", me.Mem)
+	fmt.Println("Cpu Time is ", me.Cputime)
+	fmt.Println("Process Time is ", me.Time)
+	fmt.Println(" ")
 
 	defer file.Close()
 	file2, openerr2 := os.Open(path)

@@ -6,8 +6,10 @@ package dedupe
 
 import (
 	"encoding/hex"
+	"fmt"
 	"io"
 	"os"
+	ts "ryuhei/Go_Dedup/cmd/testtool"
 	"ryuhei/Go_Dedup/cmd/util"
 )
 
@@ -34,6 +36,9 @@ func (sh *StrideHash) CreateStrideHash(file *os.File, strideSize uint32) {
 	var MD5hash string
 	buf := make([]byte, int(strideSize))
 	var i uint32
+
+	me := ts.NewMeasure()
+	me.StartAll()
 	for i = 0; i < sh.StrideCount; i++ {
 		readSize, readerr := io.ReadFull(file, buf)
 
@@ -45,5 +50,12 @@ func (sh *StrideHash) CreateStrideHash(file *os.File, strideSize uint32) {
 		MD5hash = util.CalcMD5Hash(binary)
 		sh.Hashes[i] = MD5hash
 	}
+	me.EndAll()
+	me.CalcAll()
+	fmt.Println("MD5 Hashing")
+	fmt.Println("Memory is ", me.Mem)
+	fmt.Println("Cpu Time is ", me.Cputime)
+	fmt.Println("Process Time is ", me.Time)
+	fmt.Println(" ")
 
 }

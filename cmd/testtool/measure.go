@@ -9,16 +9,16 @@ import (
 )
 
 type Measure struct {
-	mem     float64
-	cputime float64
-	time    float64
-	pro     *process.Process
+	Mem     float64
+	Cputime float64
+	Time    float64
+	Pro     *process.Process
 }
 
 func NewMeasure() Measure {
 	me := new(Measure)
 	PID := os.Getpid()
-	me.pro, _ = process.NewProcess(int32(PID))
+	me.Pro, _ = process.NewProcess(int32(PID))
 
 	return *me
 }
@@ -41,21 +41,21 @@ func (m *Measure) EndMem() {
 }
 
 func (m *Measure) CalcMem() {
-	m.mem = float64(eMem.Alloc-sMem.Alloc) / float64(1024*1024)
+	m.Mem = float64(eMem.Alloc-sMem.Alloc) / float64(1024*1024)
 }
 
 func (m *Measure) StartCpu() {
-	sCPUStat, _ := m.pro.Times()
+	sCPUStat, _ := m.Pro.Times()
 	sCPU = sCPUStat.Total()
 }
 
 func (m *Measure) EndCpu() {
-	eCPUStat, _ := m.pro.Times()
+	eCPUStat, _ := m.Pro.Times()
 	eCPU = eCPUStat.Total()
 }
 
 func (m *Measure) CalcCpu() {
-	m.cputime = eCPU - sCPU
+	m.Cputime = eCPU - sCPU
 }
 
 func (m *Measure) StartTime() {
@@ -67,21 +67,23 @@ func (m *Measure) EndTime() {
 }
 
 func (m *Measure) CalcTime() {
-	m.time = eTime.Seconds()
+	m.Time = eTime.Seconds()
 }
 
-func (m *Measure) AllStart() {
+func (m *Measure) StartAll() {
 	m.StartMem()
 	m.StartCpu()
 	m.StartTime()
 }
 
-func (m *Measure) AllEnd() {
+func (m *Measure) EndAll() {
 	m.EndMem()
 	m.EndCpu()
 	m.EndTime()
 }
 
-func (m *Measure) AllCalc() {
-
+func (m *Measure) CalcAll() {
+	m.CalcMem()
+	m.CalcCpu()
+	m.CalcTime()
 }

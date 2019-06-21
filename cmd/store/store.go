@@ -1,10 +1,12 @@
 package store
 
 import (
+	"fmt"
 	"io"
 	"os"
 
 	de "ryuhei/Go_Dedup/cmd/dedupe"
+	ts "ryuhei/Go_Dedup/cmd/testtool"
 )
 
 // SaveData はデータをbucketの中に保存する関数
@@ -13,7 +15,9 @@ import (
 func SaveData(file *os.File, sh *de.StrideHash, strideSize uint32) {
 
 	buf := make([]byte, int(strideSize))
+	me := ts.NewMeasure()
 
+	me.StartAll()
 	for i := range sh.Hashes {
 		_, readerr := io.ReadFull(file, buf)
 
@@ -36,4 +40,11 @@ func SaveData(file *os.File, sh *de.StrideHash, strideSize uint32) {
 			newfile.Write(buf)
 		}()
 	}
+	me.EndAll()
+	me.CalcAll()
+	fmt.Println("Store")
+	fmt.Println("Memory is ", me.Mem)
+	fmt.Println("Cpu Time is ", me.Cputime)
+	fmt.Println("Process Time is ", me.Time)
+	fmt.Println(" ")
 }
